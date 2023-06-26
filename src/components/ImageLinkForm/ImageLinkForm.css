@@ -1,4 +1,4 @@
-.shadow-5 {
+.imageLinkButton {
 	background:
     radial-gradient(black 3px, transparent 4px),
     radial-gradient(black 3px, transparent 4px),
@@ -12,7 +12,7 @@
 }
 
 @media screen and (min-width: 900px) {
-  .shadow-5 {
+  .imageLinkButton{
   	width: 50%;
   }
 }
