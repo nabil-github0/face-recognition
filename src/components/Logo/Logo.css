@@ -1,0 +1,11 @@
+.br2 {
+	height: 130px;
+	width: 130px;
+	background: linear-gradient(to right, rgb(0, 212, 240), rgb(53, 86, 248));
+}
+
+img {
+	height: 6em;
+	width: 6em;
+	padding-top: 15px;
+}
