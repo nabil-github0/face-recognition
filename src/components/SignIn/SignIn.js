@@ -25,7 +25,7 @@ class SignIn extends Component{
   }
 
   onSubmitSignIn = () => {
-    fetch("https://face-recognition-back-end-production.up.railway.app/signin", {
+    fetch("http://localhost:3000/signin", {
       method: "post",
       headers: {"Content-Type":"application/json"},
       body: JSON.stringify({

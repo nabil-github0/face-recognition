@@ -67,7 +67,7 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({imageUrl:this.state.input});
     this.setState({clarifaiApiError:""});
-    fetch("https://face-recognition-back-end-production.up.railway.app/imageURL", {
+    fetch("http://localhost:300/imageURL", {
       method:"post",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
@@ -77,7 +77,7 @@ class App extends Component {
         .then(response => response.json())
         .then(result => {
           if(result.status.description === "Ok") {
-            fetch("https://face-recognition-back-end-production.up.railway.app/image", {
+            fetch("http://localhost:300/image", {
                  method: "put",
                  headers: { "Content-Type": "application/json" },
                  body: JSON.stringify({
