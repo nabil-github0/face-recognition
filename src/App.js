@@ -6,7 +6,7 @@ import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Rank from "./components/Rank/Rank";
 import SignIn from "./components/SignIn/SignIn";
 import SignUp from "./components/SignUp/SignUp";
-// import ParticlesBg from 'particles-bg';
+import ParticlesBg from 'particles-bg';
 
 const initialState = {
   input:"",
@@ -111,7 +111,7 @@ class App extends Component {
     const {isSignedIn, route, boxes, imageUrl} = this.state;
       return (
     <div>
-    {/* <ParticlesBg type="cobweb" bg={true} /> */}
+    <ParticlesBg type="cobweb" bg={true} />
     <Navigation isSignedIn={isSignedIn} onRouteChange ={this.onRouteChange}/>
     {route === "home" ?
         <div>
