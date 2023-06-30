@@ -5,72 +5,59 @@ import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Rank from "./components/Rank/Rank";
 import SignIn from "./components/SignIn/SignIn";
-import Register from "./components/Register/Register";
+import SignUp from "./components/SignUp/SignUp";
 // import ParticlesBg from 'particles-bg';
 
-
-const returnClarifaiJSONRequest = (imageUrl) => {
-   const PAT = '697d591472b14a4c9fafda9e3facf5ae';
-    const USER_ID = '9qnqroy1xb35';       
-    const APP_ID = 'test';
-    const IMAGE_URL = imageUrl;
-
-    const raw = JSON.stringify({
-        "user_app_id": {
-            "user_id": USER_ID,
-            "app_id": APP_ID
-        },
-        "inputs": [
-            {
-                "data": {
-                    "image": {
-                        "url": IMAGE_URL
-                    }
-                }
-            }
-        ]
-    });
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Key ' + PAT
-        },
-        body: raw
-    };
-    return requestOptions;
-
+const initialState = {
+  input:"",
+  imageUrl:"",
+  boxes: [],
+  route: "signin",
+  isSignedIn:false,
+  clarifaiApiError:"",
+  user: {
+        id:"",
+        name:"",
+        email:"",
+        entries:0,
+        joined:""
+  }
 }
 
 class App extends Component {
   constructor() {
     super()
-    this.state= {
-      input:"",
-      imageUrl:"",
-      box: {},
-      route: "signin",
-      isSignedIn:false
-    }
+    this.state= initialState;
+  }
+
+  loadUser = (data)=> {
+    this.setState({user: {
+      id:data.id,
+      name:data.name,
+      email:data.email,
+      entries:data.entries,
+      joined:data.joined
+    }})
   }
 
   calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const clarifaiFaces = data.outputs[0].data.regions.map(region => region.region_info.bounding_box);
     const image = document.getElementById("inputImage");
     const width = Number(image.width);
     const height = Number(image.height);
 
-    return {
-      leftCol: clarifaiFace.left_col*width,
-      topRow: clarifaiFace.top_row*height,
-      rightCol: width - (clarifaiFace.right_col*width),
-      bottomRow: height - (clarifaiFace.bottom_row*height)
-    }
+     return clarifaiFaces.map(face =>{
+      return {
+        leftCol: face.left_col*width,
+        topRow: face.top_row*height,
+        rightCol: width - (face.right_col*width),
+        bottomRow: height - (face.bottom_row*height)
+      }
+    })
   }
 
-  displayFaceBox = (box) => {
-    this.setState({box: box});
+  displayFaceBox = (boxes) => {
+    this.setState({boxes: boxes});
   }
 
   onInputChange = (event) => {
@@ -78,16 +65,42 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-    this.setState({imageUrl:this.state.input})
-    fetch(`https://api.clarifai.com/v2/models/face-detection/outputs`, returnClarifaiJSONRequest(this.state.input))
+    this.setState({imageUrl:this.state.input});
+    this.setState({clarifaiApiError:""});
+    fetch("http://localhost:3000/imageURL", {
+      method:"post",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        imageURL:this.state.input
+      })
+    })
         .then(response => response.json())
-        .then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
-        .catch(error => console.log('error', error));
+        .then(result => {
+          if(result.status.description === "Ok") {
+            fetch("http://localhost:3000/image", {
+                 method: "put",
+                 headers: { "Content-Type": "application/json" },
+                 body: JSON.stringify({
+                 id: this.state.user.id
+      }),
+    }).then(res => res.json())
+    .then(data => {
+      this.setState(Object.assign(this.state.user, {entries:data}));
+    })
+    this.displayFaceBox(this.calculateFaceLocation(result))          
+          }else {
+            this.setState({clarifaiApiError:"Your provided url should be less than 2000 characters"});
+            this.displayFaceBox({});
+          }
+        })
+        .catch(error => {this.setState({clarifaiApiError:"Your provided url should be less than 2000 characters"});
+        this.displayFaceBox({});
+      });
   }
 
   onRouteChange = (route) => {
     if(route === "signout") {
-      this.setState({isSignedIn:false})
+      this.setState(initialState)
     }else if (route === "home"){
       this.setState({isSignedIn:true})
     }
@@ -95,7 +108,7 @@ class App extends Component {
   }
 
   render(){
-    const {isSignedIn, route, box, imageUrl} = this.state;
+    const {isSignedIn, route, boxes, imageUrl} = this.state;
       return (
     <div>
     {/* <ParticlesBg type="cobweb" bg={true} /> */}
@@ -103,12 +116,12 @@ class App extends Component {
     {route === "home" ?
         <div>
         <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-        <FaceRecognition box={box} imageUrl={imageUrl} /> 
+        <Rank name={this.state.user.name} entries={this.state.user.entries} />
+        <ImageLinkForm clarifaiApiError={this.state.clarifaiApiError} onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
+        <FaceRecognition boxes={boxes} imageUrl={imageUrl} /> 
         </div>:( route === "signup" ?
-          <Register onRouteChange={this.onRouteChange} /> :
-          <SignIn onRouteChange={this.onRouteChange} /> 
+          <SignUp loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> :
+          <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> 
         )
     }
     </div>

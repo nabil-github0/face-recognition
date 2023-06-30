@@ -1,9 +1,10 @@
 import React from "react";
 import "./ImageLinkForm.css"
 
-const ImageLinkForm = ({onInputChange, onButtonSubmit}) => {
+const ImageLinkForm = ({onInputChange, onButtonSubmit, clarifaiApiError}) => {
 	return (
 		<div>
+			<div>
 			<p className="f3" style={{textAlign:"center"}}>
 				{"This Magic Brain will detect faces in your picture. Give it a try!"}
 			</p>
@@ -13,6 +14,8 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit}) => {
 				<button className="w-30 grow f4 link ph3 pv2 dib white bg-light-purple" onClick={onButtonSubmit}>Detect</button>
 			</div>
 			</div>
+		</div>
+			<p className="f6 red db">{clarifaiApiError}</p>
 		</div>
 		)
 }
