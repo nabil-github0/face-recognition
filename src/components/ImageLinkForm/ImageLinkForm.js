@@ -5,13 +5,13 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit, clarifaiApiError}) => {
 	return (
 		<div>
 			<div>
-			<p className="f3" style={{textAlign:"center"}}>
+			<p className="f4 f3-m f3-l" style={{textAlign:"center"}}>
 				{"This Magic Brain will detect faces in your picture. Give it a try!"}
 			</p>
 			<div style={{display:"flex", justifyContent:"center"}}>
 			<div className="pa4 br3 imageLinkButton shadow-5">
-				<input type="text" className="f4 pa2 w-70 center" onChange={onInputChange}/>
-				<button className="w-30 grow f4 link ph3 pv2 dib white bg-light-purple" onClick={onButtonSubmit}>Detect</button>
+				<input type="text" className="f5 f4-m f4-l pa2 w-60 w-70-m w-70-l center" onChange={onInputChange}/>
+				<button className="w-40 grow w-30-m w-30-l f5 link ph3 pv2 dib white bg-light-purple" onClick={onButtonSubmit}>Detect</button>
 			</div>
 			</div>
 		</div>
