@@ -1,7 +1,7 @@
 import React from "react";
 import "./ImageLinkForm.css"
 
-const ImageLinkForm = ({onInputChange, onButtonSubmit, clarifaiApiError}) => {
+const ImageLinkForm = ({onInputChange, onButtonSubmit, onKeySubmit, clarifaiApiError}) => {
 	return (
 		<div>
 			<div>
@@ -10,7 +10,7 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit, clarifaiApiError}) => {
 			</p>
 			<div style={{display:"flex", justifyContent:"center"}}>
 			<div className="pa4 br3 imageLinkButton shadow-5">
-				<input type="text" className="f5 f4-m f4-l pa2 w-60 w-70-m w-70-l center" onChange={onInputChange}/>
+				<input id="inputField" type="text" className="f5 f4-m f4-l pa2 w-60 w-70-m w-70-l center" onChange={onInputChange} onKeyDown={onKeySubmit}/>
 				<button className="w-40 grow w-30-m w-30-l f5 link ph3 pv2 dib white bg-light-purple" onClick={onButtonSubmit}>Detect</button>
 			</div>
 			</div>
