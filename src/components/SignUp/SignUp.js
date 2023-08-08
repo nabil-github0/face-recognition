@@ -41,7 +41,7 @@ class SignUp extends Component {
   }
 
   onSubmitSignUp = () => {
-    fetch("https://face-recognition-back-end-production.up.railway.app/signup", {
+    fetch("https://jittery-shrug-moth.cyclic.app/signup", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
